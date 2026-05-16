@@ -1,0 +1,35 @@
+graph TD
+    Client[Web / Mobile / B2B / Marketplace] --> CDN[Azure Front Door<br/>CDN + WAF]
+    CDN --> BlobStorage[Azure Blob Storage<br/>Static content]
+    CDN --> LoadBalancer[Load Balancer]
+
+    LoadBalancer --> APIGW[API Gateway<br/>ASP.NET Core + YARP]
+
+    subgraph Kubernetes Cluster
+        APIGW --> Keycloak[Keycloak<br/>Auth & SSO]
+
+        APIGW --> UserSvc[User Service]
+        APIGW --> CartSvc[Cart Service]
+        APIGW --> OrderSvc[Order Service]
+        APIGW --> ProductSvc[Product Service]
+        APIGW --> PaymentSvc[Payment Service]
+
+        UserSvc --> Keycloak
+
+        UserSvc --> UserDB[(User DB)]
+        CartSvc --> CartDB[(PostgreSQL)]
+        OrderSvc --> OrderDB[(PostgreSQL)]
+        ProductSvc --> ProductDB[(PostgreSQL)]
+
+        CartSvc --> Redis[(Redis Cluster<br/>cache + idempotency)]
+        OrderSvc --> Kafka{{Kafka<br/>Event Bus}}
+        ProductSvc --> Kafka
+
+        Kafka --> WarehouseSvc[Warehouse Service]
+        Kafka --> AnalyticsSvc[Analytics Service]
+        Kafka --> NotifSvc[Notification Service]
+        Kafka --> IntegrationSvc[Integration Service]
+
+        IntegrationSvc --> TaxAPI[Porezna uprava API]
+        PaymentSvc --> PaymentGW[Stripe / Adyen]
+    end
