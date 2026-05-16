@@ -22,4 +22,9 @@ public static class ConfigureServices
         builder.Services.Configure<ApplicationConfig>(builder.Configuration.GetSection(ConfigSectionConstants.Application));
         builder.Services.Configure<InfrastructureConfig>(builder.Configuration.GetSection(ConfigSectionConstants.Infrastructure));
     }
+    
+    public static void AddWebServices(this IServiceCollection services)
+    {
+        services.AddOpenApi();
+    }
 }

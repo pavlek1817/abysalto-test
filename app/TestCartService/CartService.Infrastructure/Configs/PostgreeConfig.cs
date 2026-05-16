@@ -1,3 +1,6 @@
 namespace CartService.Infrastructure.Configs;
 
-public record PostgreeConfig(string ConnectionString);
+public record PostgreeConfig
+{
+    public string ConnectionString { get; init; } = string.Empty;
+}

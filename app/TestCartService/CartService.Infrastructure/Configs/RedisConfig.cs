@@ -1,3 +1,6 @@
 namespace CartService.Infrastructure.Configs;
 
-public record RedisConfig(string Host);
+public record RedisConfig
+{
+    public string Host { get; init; } = string.Empty;
+}
