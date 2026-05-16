@@ -11,4 +11,9 @@ public class CartRepository(CartDbContext dbContext)
         => dbContext.Set<Cart>()
             .Include(x => x.Items)
             .SingleOrDefaultAsync(x => x.Id == id, ct);
+
+    public Task<Cart?> GetByOwnerIdAsync(string ownerId, CancellationToken ct)
+        => dbContext.Set<Cart>()
+            .Include(x => x.Items)
+            .SingleOrDefaultAsync(x => x.OwnerId == ownerId, ct);
 }
