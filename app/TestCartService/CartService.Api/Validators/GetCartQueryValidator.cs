@@ -7,7 +7,8 @@ public class GetCartQueryValidator : AbstractValidator<GetCartQuery>
 {
     public GetCartQueryValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0);
+        RuleFor(x => x.OwnerId)
+            .NotNull()
+            .NotEmpty();
     }
 }

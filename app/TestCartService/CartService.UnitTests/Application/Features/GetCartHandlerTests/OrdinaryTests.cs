@@ -7,12 +7,12 @@ namespace CartService.UnitTests.Application.Features.GetCartHandlerTests;
 
 internal class OrdinaryTests : GetCartHandlerTestBase
 {
-    private int _id;
+    private string ownerId;
 
     [SetUp]
     public void SetUp()
     {
-        this._id = this.Fixture.Create<int>();
+        this.ownerId = this.Fixture.Create<string>();
 
         this.InstantiatedDependencies();
     }
@@ -22,7 +22,7 @@ internal class OrdinaryTests : GetCartHandlerTestBase
     {
         // Arrange
         var cart = this.Fixture.Build<Cart>()
-            .With(x => x.Id, _id)
+            .With(x => x.OwnerId, ownerId)
             .Without(x => x.Items)
             .Create();
 
@@ -42,12 +42,12 @@ internal class OrdinaryTests : GetCartHandlerTestBase
         cart.Items.AddRange(cartItems);
 
         this.MockedCartRepository
-            .Setup(x => x.GetByIdAsync(_id, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByOwnerIdAsync(ownerId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(cart);
 
         // Act
         var result = await this.GetService()
-            .HandleAsync(new GetCartQuery(_id), CancellationToken.None);
+            .HandleAsync(new GetCartQuery(ownerId), CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
@@ -70,11 +70,11 @@ internal class OrdinaryTests : GetCartHandlerTestBase
     {
         // Arrange
         this.MockedCartRepository
-            .Setup(x => x.GetByIdAsync(_id, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetByOwnerIdAsync(ownerId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => null);
 
         
-        var act = async () => await this.GetService().HandleAsync(new GetCartQuery(_id), CancellationToken.None);
+        var act = async () => await this.GetService().HandleAsync(new GetCartQuery(ownerId), CancellationToken.None);
 
         // Act && Assert
         await act.Should().ThrowAsync<ItemDoesNotExistException>();

@@ -21,11 +21,11 @@ public class GetCartHandler(
 {
     public async Task<CartModel> HandleAsync(GetCartQuery query, CancellationToken ct)
     {
-        var cart = await cartRepository.GetByIdAsync(query.Id, ct);
+        var cart = await cartRepository.GetByOwnerIdAsync(query.OwnerId, ct);
 
         if (cart is null)
         {
-            logger.LogWarning("Cart with id {Id} was not found.", query.Id);
+            logger.LogWarning("Cart for owner id {OwnerId} was not found.", query.OwnerId);
             throw new ItemDoesNotExistException($"Cart was not found.");
         }
 

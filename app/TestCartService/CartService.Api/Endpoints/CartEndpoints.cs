@@ -24,13 +24,13 @@ public static class CartEndpoints
         });
 
         group.MapGet("get", async (
-            int id,
+            string ownerId,
             IMediator mediator,
             CancellationToken ct) =>
         {
             try
             {
-                var result = await mediator.SendAsync<GetCartQuery, CartModel>(new GetCartQuery(id), ct);
+                var result = await mediator.SendAsync<GetCartQuery, CartModel>(new GetCartQuery(ownerId), ct);
                 return Results.Ok(result);
             }
             catch (ItemDoesNotExistException)
