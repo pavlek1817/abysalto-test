@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Caching\" />
-      <Folder Include="Persistence\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -17,6 +16,15 @@
       <PackageReference Include="StackExchange.Redis" Version="2.8.41" />
       <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
       <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CartService.Application\CartService.Application.csproj" />
+      <ProjectReference Include="..\CartService.Domain\CartService.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿using CartService.Infrastructure.Persistence;
+﻿using CartService.Application.Persistence;
+using CartService.Infrastructure.Persistence;
+using CartService.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -23,6 +25,9 @@ public static class ConfigureServices
         services.AddHealthChecks()
             .AddNpgSql(config.Database.ConnectionString, name: "postgres", tags: ["ready"])
             .AddRedis(config.Cache.Host, name: "redis", tags: ["ready"]);
+        
+        // Add repositories
+        services.AddScoped<ICartRepository, CartRepository>();
 
         return services;
     }
