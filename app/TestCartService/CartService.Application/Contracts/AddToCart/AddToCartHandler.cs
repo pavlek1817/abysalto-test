@@ -1,3 +1,4 @@
+using AutoMapper;
 using CartService.Application.Contracts.GetCart.Models;
 using CartService.Application.Mediator.Interfaces.Handlers;
 using CartService.Application.Persistence;
@@ -8,7 +9,8 @@ namespace CartService.Application.Contracts.AddToCart;
 
 public class AddToCartHandler(
     ILogger<AddToCartHandler> logger,
-    ICartRepository cartRepository) : ICommandHandler<AddToCartCommand, CartModel>
+    ICartRepository cartRepository,
+    IMapper mapper) : ICommandHandler<AddToCartCommand, CartModel>
 {
     public async Task<CartModel> HandleAsync(AddToCartCommand command, CancellationToken ct)
     {
@@ -40,6 +42,7 @@ public class AddToCartHandler(
             if (existingItem is not null)
             {
                 existingItem.Quantity += command.Quantity;
+                existingItem.UpdatedAt = DateTime.UtcNow;
             }
             else
             {
@@ -55,15 +58,6 @@ public class AddToCartHandler(
             await cartRepository.UpdateAsync(cart, ct);
         }
 
-        return new CartModel(
-            cart.Id,
-            cart.CreatedAt,
-            cart.UpdatedAt ?? default,
-            cart.Items
-                .Select(item => new CartItemModel(
-                    item.ProductId.ToString(),
-                    item.Quantity,
-                    item.UnitPrice))
-                .ToArray());
+        return mapper.Map<CartModel>(cart);
     }
 }

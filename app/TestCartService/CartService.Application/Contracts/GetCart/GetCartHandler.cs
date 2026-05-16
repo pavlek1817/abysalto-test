@@ -1,3 +1,4 @@
+using AutoMapper;
 using CartService.Application.Contracts.GetCart.Models;
 using CartService.Application.Exceptions;
 using CartService.Application.Mediator.Interfaces.Handlers;
@@ -12,9 +13,11 @@ namespace CartService.Application.Contracts.GetCart;
 /// </summary>
 /// <param name="logger"></param>
 /// <param name="cartRepository"></param>
+/// <param name="mapper"></param>
 public class GetCartHandler(
     ILogger<GetCartHandler> logger,
-    ICartRepository cartRepository) : IQueryHandler<GetCartQuery, CartModel>
+    ICartRepository cartRepository,
+    IMapper mapper) : IQueryHandler<GetCartQuery, CartModel>
 {
     public async Task<CartModel> HandleAsync(GetCartQuery query, CancellationToken ct)
     {
@@ -26,15 +29,6 @@ public class GetCartHandler(
             throw new ItemDoesNotExistException($"Cart was not found.");
         }
 
-        return new CartModel(
-            Id: cart.Id,
-            CreatedAt: cart.CreatedAt,
-            UpdatedAt: cart.UpdatedAt ?? default,
-            Items: cart.Items
-                .Select(item => new CartItemModel(
-                    item.ProductId.ToString(),
-                    item.Quantity,
-                    item.UnitPrice))
-                .ToArray());
+        return mapper.Map<CartModel>(cart);
     }
 }
