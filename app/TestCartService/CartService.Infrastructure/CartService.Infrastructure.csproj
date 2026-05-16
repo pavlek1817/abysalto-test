@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CartService.Application\CartService.Application.csproj" />
       <ProjectReference Include="..\CartService.Domain\CartService.Domain.csproj" />
     </ItemGroup>
 
