@@ -20,6 +20,10 @@ public static class ConfigureServices
         services.AddSingleton<IConnectionMultiplexer>(
             ConnectionMultiplexer.Connect(config.Cache.Host));
 
+        services.AddHealthChecks()
+            .AddNpgSql(config.Database.ConnectionString, name: "postgres", tags: ["ready"])
+            .AddRedis(config.Cache.Host, name: "redis", tags: ["ready"]);
+
         return services;
     }
 }
