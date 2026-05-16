@@ -15,6 +15,6 @@ public class CartItem : IEntity
     public DateTime CreatedAt { get; init; }
     
     public DateTime? UpdatedAt { get; init; }
-    
-    public Cart Cart { get; init; }
+
+    public Cart Cart { get; init; } = new Cart();
 }

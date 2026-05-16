@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Infrastructure", "CartService.Infrastructure\CartService.Infrastructure.csproj", "{6B15FDBF-C195-438F-93D4-A915C8AC8255}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.UnitTests", "CartService.UnitTests\CartService.UnitTests.csproj", "{4C36D2B0-0FD2-4E62-90B5-517CDF035455}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C36D2B0-0FD2-4E62-90B5-517CDF035455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C36D2B0-0FD2-4E62-90B5-517CDF035455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C36D2B0-0FD2-4E62-90B5-517CDF035455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C36D2B0-0FD2-4E62-90B5-517CDF035455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
