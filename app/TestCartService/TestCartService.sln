@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Domain", "CartS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Application", "CartService.Application\CartService.Application.csproj", "{054108CD-1996-4A7E-833D-6FA68E33DAEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Infrastructure", "CartService.Infrastructure\CartService.Infrastructure.csproj", "{6B15FDBF-C195-438F-93D4-A915C8AC8255}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{054108CD-1996-4A7E-833D-6FA68E33DAEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{054108CD-1996-4A7E-833D-6FA68E33DAEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{054108CD-1996-4A7E-833D-6FA68E33DAEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B15FDBF-C195-438F-93D4-A915C8AC8255}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
