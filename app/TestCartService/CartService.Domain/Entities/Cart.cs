@@ -8,7 +8,7 @@ public class Cart : IEntity
     
     public DateTime CreatedAt { get; set; }
     
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime? UpdatedAt { get; set; }
     
     public List<CartItem> Items { get; init; } = new ();
 }

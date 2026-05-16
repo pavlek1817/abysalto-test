@@ -1,9 +1,8 @@
 using CartService.Domain.Entities;
-using FluentAssertions;
 
-namespace CartService.UnitTests.Infrastructure.Repositories.CartRepositoryTests;
+namespace CartService.UnitTests.Infrastructure.Persistence.Repositories.CartRepositoryTests;
 
-internal class DeleteAsyncTests : CartRepositoryTestBase
+internal class UpdateAsyncTests : CartRepositoryTestBase
 {
     private Cart _cart = null!;
     private Cart _irrelevantCart = null!;
@@ -26,14 +25,22 @@ internal class DeleteAsyncTests : CartRepositoryTestBase
     }
 
     [Test]
-    public async Task OrdinaryCase_ShouldDeleteCart()
+    public async Task OrdinaryCase_ShouldUpdateCart()
     {
+        // Arrange
+        var updatedCart = this.Fixture.Build<Cart>()
+            .With(x => x.Id, _cart.Id)
+            .Without(x => x.Items)
+            .Create();
+
+        this.DatabaseContext.ChangeTracker.Clear();
+
         // Act
-        await this.GetService().DeleteAsync(_cart.Id, CancellationToken.None);
+        await this.GetService().UpdateAsync(updatedCart, CancellationToken.None);
 
         // Assert
         var result = await this.DatabaseContext.Set<Cart>().FindAsync(_cart.Id);
-        result.Should().BeNull();
+        result.Should().BeEquivalentTo(updatedCart, options => options.Excluding(x => x.Items));
 
         var untouched = await this.DatabaseContext.Set<Cart>().FindAsync(_irrelevantCart.Id);
         untouched.Should().BeEquivalentTo(_irrelevantCart);

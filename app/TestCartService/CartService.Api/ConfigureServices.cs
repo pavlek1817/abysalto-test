@@ -1,4 +1,5 @@
 using CartService.Api.Constants;
+using FluentValidation;
 using CartService.Application;
 using CartService.Infrastructure;
 
@@ -26,5 +27,7 @@ public static class ConfigureServices
     public static void AddWebServices(this IServiceCollection services)
     {
         services.AddOpenApi();
+
+        services.AddValidatorsFromAssemblyContaining<Program>();
     }
 }

@@ -1,6 +1,6 @@
 using CartService.Domain;
 
-namespace CartService.Application.Persistence;
+namespace CartService.Application.Infrastructure.Persistence;
 
 public interface IRepository<TEntity> where TEntity : class, IEntity, new()
 {

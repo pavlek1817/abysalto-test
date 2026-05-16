@@ -1,4 +1,6 @@
-﻿using CartService.Application.Persistence;
+﻿using CartService.Application.Infrastructure.External;
+using CartService.Application.Infrastructure.Persistence;
+using CartService.Infrastructure.External;
 using CartService.Infrastructure.Persistence;
 using CartService.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +28,8 @@ public static class ConfigureServices
             .AddNpgSql(config.Database.ConnectionString, name: "postgres", tags: ["ready"])
             .AddRedis(config.Cache.Host, name: "redis", tags: ["ready"]);
         
-        // Add repositories
         services.AddScoped<ICartRepository, CartRepository>();
+        services.AddSingleton<IProductService, ProductService>();
 
         return services;
     }

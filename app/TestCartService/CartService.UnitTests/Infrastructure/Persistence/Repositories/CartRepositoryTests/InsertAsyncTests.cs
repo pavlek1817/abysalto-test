@@ -1,7 +1,6 @@
 using CartService.Domain.Entities;
-using FluentAssertions;
 
-namespace CartService.UnitTests.Infrastructure.Repositories.CartRepositoryTests;
+namespace CartService.UnitTests.Infrastructure.Persistence.Repositories.CartRepositoryTests;
 
 internal class InsertAsyncTests : CartRepositoryTestBase
 {
