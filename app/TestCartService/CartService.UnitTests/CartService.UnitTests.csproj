@@ -29,4 +29,8 @@
       <ProjectReference Include="..\CartService.Api\CartService.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Infrastructure\Persistence\" />
+    </ItemGroup>
+
 </Project>

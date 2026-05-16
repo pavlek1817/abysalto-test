@@ -1,7 +1,7 @@
 using CartService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace CartService.UnitTests.Infrastructure.Repositories;
+namespace CartService.UnitTests.Infrastructure.Persistence.Repositories;
 
 internal abstract class RepositoryTestBase<TRepository> : TestBase
     where TRepository : class

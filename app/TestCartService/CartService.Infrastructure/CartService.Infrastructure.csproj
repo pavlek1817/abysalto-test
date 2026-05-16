@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <Folder Include="Caching\" />
+      <Folder Include="External\" />
     </ItemGroup>
 
     <ItemGroup>

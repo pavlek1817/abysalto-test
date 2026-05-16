@@ -1,7 +1,8 @@
 using AutoMapper;
 using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Infrastructure.External;
+using CartService.Application.Infrastructure.Persistence;
 using CartService.Application.Mediator.Interfaces.Handlers;
-using CartService.Application.Persistence;
 using CartService.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -10,54 +11,73 @@ namespace CartService.Application.Features.AddToCart;
 public class AddToCartHandler(
     ILogger<AddToCartHandler> logger,
     ICartRepository cartRepository,
+    IProductService productService,
     IMapper mapper) : ICommandHandler<AddToCartCommand, CartModel>
 {
     public async Task<CartModel> HandleAsync(AddToCartCommand command, CancellationToken ct)
     {
-        var cart = await cartRepository.GetByOwnerIdAsync(command.OwnerId, ct);
+        var product = new ProductModel(command.ProductId, command.Quantity);
 
-        if (cart is null)
+        var unitPrice = await productService.ResolveProductPriceAndSubtractAsync(product, ct);
+
+        try
         {
-            logger.LogInformation("No cart found for owner {OwnerId}. Creating a new one.", command.OwnerId);
+            var cart = await cartRepository.GetByOwnerIdAsync(command.OwnerId, ct);
 
-            cart = await cartRepository.InsertAsync(new Cart
+            if (cart is null)
             {
-                OwnerId = command.OwnerId,
-                Items =
-                [
-                    new CartItem
-                    {
-                        ProductId = command.ProductId,
-                        Quantity = command.Quantity,
-                        UnitPrice = command.UnitPrice
-                    }
-                ]
-            }, ct);
-        }
-        else
-        {
-            var existingItem = cart.Items
-                .SingleOrDefault(x => x.ProductId == command.ProductId);
+                logger.LogInformation("No cart found for owner {OwnerId}. Creating a new one.", command.OwnerId);
 
-            if (existingItem is not null)
-            {
-                existingItem.Quantity += command.Quantity;
-                existingItem.UpdatedAt = DateTime.UtcNow;
+                cart = await cartRepository.InsertAsync(new Cart
+                {
+                    OwnerId = command.OwnerId,
+                    Items =
+                    [
+                        new CartItem
+                        {
+                            ProductId = command.ProductId,
+                            Quantity = command.Quantity,
+                            UnitPrice = unitPrice
+                        }
+                    ]
+                }, ct);
             }
             else
             {
-                cart.Items.Add(new CartItem
+                cart.UpdatedAt = DateTime.UtcNow;
+                var existingItem = cart.Items
+                    .SingleOrDefault(x => x.ProductId == command.ProductId);
+
+                if (existingItem is not null)
                 {
-                    CartId = cart.Id,
-                    ProductId = command.ProductId,
-                    Quantity = command.Quantity,
-                    UnitPrice = command.UnitPrice
-                });
+                    existingItem.Quantity += command.Quantity;
+                    existingItem.UpdatedAt = DateTime.UtcNow;
+                }
+                else
+                {
+                    cart.Items.Add(new CartItem
+                    {
+                        CartId = cart.Id,
+                        ProductId = command.ProductId,
+                        Quantity = command.Quantity,
+                        UnitPrice = unitPrice
+                    });
+                }
+
+                await cartRepository.UpdateAsync(cart, ct);
             }
 
-            await cartRepository.UpdateAsync(cart, ct);
+            return mapper.Map<CartModel>(cart);
         }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, 
+                "Failed to add product {ProductId} to cart for owner {OwnerId}. " +
+                "Replenishing stock.",
+                command.ProductId, command.OwnerId);
 
-        return mapper.Map<CartModel>(cart);
+            await productService.ReplenishProductStockAsync(product, ct);
+            throw;
+        }
     }
 }

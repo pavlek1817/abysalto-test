@@ -1,4 +1,4 @@
-using CartService.Application.Persistence;
+using CartService.Application.Infrastructure.Persistence;
 using CartService.Domain;
 using Microsoft.EntityFrameworkCore;
 

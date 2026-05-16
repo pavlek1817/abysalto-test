@@ -1,8 +1,8 @@
 using AutoMapper;
 using CartService.Application.Exceptions;
 using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Infrastructure.Persistence;
 using CartService.Application.Mediator.Interfaces.Handlers;
-using CartService.Application.Persistence;
 using Microsoft.Extensions.Logging;
 
 namespace CartService.Application.Features.GetCart;

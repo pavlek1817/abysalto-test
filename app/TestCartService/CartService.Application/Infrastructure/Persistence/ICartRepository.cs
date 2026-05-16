@@ -1,6 +1,6 @@
 using CartService.Domain.Entities;
 
-namespace CartService.Application.Persistence;
+namespace CartService.Application.Infrastructure.Persistence;
 
 public interface ICartRepository : IRepository<Cart>
 {

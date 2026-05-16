@@ -1,7 +1,7 @@
 using CartService.Application.Features.GetCart;
 using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Infrastructure.Persistence;
 using CartService.Application.Mediator.Interfaces.Handlers;
-using CartService.Application.Persistence;
 using Microsoft.Extensions.Logging;
 
 namespace CartService.UnitTests.Application.Features.GetCartHandlerTests;

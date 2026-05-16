@@ -1,18 +1,17 @@
 using CartService.Domain.Entities;
 
-namespace CartService.UnitTests.Infrastructure.Repositories.CartRepositoryTests;
+namespace CartService.UnitTests.Infrastructure.Persistence.Repositories.CartRepositoryTests;
 
-internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
+internal class GetByIdAsyncTests : CartRepositoryTestBase
 {
-    private int _cartId;
-    private string _ownerId = string.Empty;
-    private List<Cart> _carts = null!;
+    private int _id;
+    
+    private List<Cart> _carts;
 
     [SetUp]
     public void SetUp()
     {
-        this._cartId = this.Fixture.Create<int>();
-        this._ownerId = this.Fixture.Create<string>();
+        this._id = this.Fixture.Create<int>();
 
         this.InstantiatedDependencies();
 
@@ -20,22 +19,23 @@ internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
         {
             new()
             {
-                Id = _cartId,
-                OwnerId = _ownerId,
+                Id = _id,
+                OwnerId = this.Fixture.Create<string>(),
                 CreatedAt = DateTime.UtcNow,
                 Items =
                 [
                     this.Fixture.Build<CartItem>()
-                        .With(x => x.CartId, _cartId)
+                        .With(x => x.CartId, _id)
                         .Without(x => x.Cart)
                         .Create(),
                     this.Fixture.Build<CartItem>()
-                        .With(x => x.CartId, _cartId)
+                        .With(x => x.CartId, _id)
                         .Without(x => x.Cart)
                         .Create()
                 ]
             },
             this.Fixture.Build<Cart>()
+                .With(x => x.Id, _id + 1)
                 .Without(x => x.Items)
                 .Create()
         };
@@ -48,10 +48,11 @@ internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
     public async Task CartExistCase_ShouldReturnCartWithItems()
     {
         // Act
-        var result = await this.GetService().GetByOwnerIdAsync(_ownerId, CancellationToken.None);
+        var result = await this.GetService().GetByIdAsync(_id, CancellationToken.None);
 
         // Assert
-        var cart = this._carts.Single(x => x.OwnerId == _ownerId);
+
+        var cart = this._carts.Single(x => x.Id == _id);
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(cart);
     }
@@ -60,7 +61,7 @@ internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
     public async Task CartDoesNotExist_ShouldReturnNull()
     {
         // Act
-        var result = await this.GetService().GetByOwnerIdAsync(this.Fixture.Create<string>(), CancellationToken.None);
+        var result = await this.GetService().GetByIdAsync(_id + 2, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();

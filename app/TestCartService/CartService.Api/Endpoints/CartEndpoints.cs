@@ -19,8 +19,19 @@ public static class CartEndpoints
             IMediator mediator,
             CancellationToken ct) =>
         {
-            var result = await mediator.SendAsync<AddToCartCommand, CartModel>(command, ct);
-            return Results.Ok(result);
+            try
+            {
+                var result = await mediator.SendAsync<AddToCartCommand, CartModel>(command, ct);
+                return Results.Ok(result);
+            }
+            catch (ItemDoesNotExistException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+            catch (NotEnoughQuantityException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
         });
 
         group.MapGet("get", async (
