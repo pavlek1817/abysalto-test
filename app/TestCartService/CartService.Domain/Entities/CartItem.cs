@@ -12,7 +12,7 @@ public class CartItem : IEntity
     
     public decimal UnitPrice { get; init; }
     
-    public DateTime CreatedAt { get; init; }
+    public DateTime CreatedAt { get; set; }
     
     public DateTime? UpdatedAt { get; init; }
 

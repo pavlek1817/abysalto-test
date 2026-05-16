@@ -4,5 +4,5 @@ public interface IEntity
 {
     int Id { get; init; }
     
-    DateTime CreatedAt { get; init; }
+    DateTime CreatedAt { get; set; }
 }

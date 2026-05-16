@@ -41,7 +41,7 @@ internal class GetByIdAsyncTests : CartRepositoryTestBase
                 .Create()
         };
 
-        this.DatabaseContext.Carts.AddRange(_carts);
+        this.DatabaseContext.Set<Cart>().AddRange(_carts);
         this.DatabaseContext.SaveChanges();
     }
 

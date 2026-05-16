@@ -13,6 +13,7 @@ public class Repository<TEntity>(CartDbContext dbContext) : IRepository<TEntity>
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct)
     {
+        entity.CreatedAt = DateTime.UtcNow;
         var entry = await dbContext.Set<TEntity>().AddAsync(entity, ct);
         await dbContext.SaveChangesAsync(ct);
         return entry.Entity;
@@ -27,8 +28,11 @@ public class Repository<TEntity>(CartDbContext dbContext) : IRepository<TEntity>
         await dbContext.SaveChangesAsync(ct);
     }
 
-    public Task DeleteAsync(int id, CancellationToken ct)
-        => dbContext.Set<TEntity>()
-            .Where(x => x.Id == id)
-            .ExecuteDeleteAsync(ct);
+    public async Task DeleteAsync(int id, CancellationToken ct)
+    {
+        var entity = await dbContext.Set<TEntity>().FindAsync([id], ct);
+        if (entity is not null)
+            dbContext.Set<TEntity>().Remove(entity);
+        await dbContext.SaveChangesAsync(ct);
+    }
 }

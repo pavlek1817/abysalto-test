@@ -6,7 +6,7 @@ public class Cart : IEntity
     
     public string OwnerId { get; init; } = string.Empty;
     
-    public DateTime CreatedAt { get; init; }
+    public DateTime CreatedAt { get; set; }
     
     public DateTime? UpdatedAt { get; init; }
     
