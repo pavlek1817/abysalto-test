@@ -171,6 +171,14 @@ API Gateway validira JWT token pri **svakom zahtjevu** — mikroservisi ne treba
 - Webhook handler za asinkrone potvrde od Stripea
 - **Baza**: PostgreSQL (EF Core)
 
+### User Service (ASP.NET Core)
+- Upravljanje korisničkim profilima (registracija, ažuriranje podataka, brisanje računa)
+- Pohrana adresa, preferencija i postavki korisnika
+- GDPR: implementira pravo na zaborav — `DELETE /users/{id}` briše sve PII podatke iz baze i objavljuje `UserDeleted` event na Kafku (ostali servisi čiste vlastite reference)
+- Keycloak ostaje jedini izvor istine za identitet; User Service pohranjuje samo aplikacijske podatke profila
+- Objavljuje `UserRegistered` event (npr. Notification servis šalje welcome email)
+- **Baza**: PostgreSQL (EF Core)
+
 ### Notification Service (ASP.NET Core Worker Service)
 - Konzumira Kafka evente (`OrderCreated`, `OrderPaid` itd.)
 - Šalje email, SMS i push notifikacije
