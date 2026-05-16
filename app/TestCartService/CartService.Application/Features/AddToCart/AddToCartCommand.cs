@@ -1,6 +1,6 @@
 using CartService.Application.Mediator.Interfaces.Models;
 
-namespace CartService.Application.Contracts.AddToCart;
+namespace CartService.Application.Features.AddToCart;
 
 public record AddToCartCommand(
     string OwnerId,

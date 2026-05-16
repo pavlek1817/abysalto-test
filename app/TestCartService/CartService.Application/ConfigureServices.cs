@@ -1,6 +1,6 @@
-using CartService.Application.Contracts.AddToCart;
-using CartService.Application.Contracts.GetCart;
-using CartService.Application.Contracts.GetCart.Models;
+using CartService.Application.Features.AddToCart;
+using CartService.Application.Features.GetCart;
+using CartService.Application.Features.GetCart.Models;
 using CartService.Application.Mappings;
 using CartService.Application.Mediator.Implementations;
 using CartService.Application.Mediator.Interfaces.Handlers;

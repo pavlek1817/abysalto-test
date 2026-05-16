@@ -1,11 +1,11 @@
 using AutoMapper;
-using CartService.Application.Contracts.GetCart.Models;
+using CartService.Application.Features.GetCart.Models;
 using CartService.Application.Mediator.Interfaces.Handlers;
 using CartService.Application.Persistence;
 using CartService.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace CartService.Application.Contracts.AddToCart;
+namespace CartService.Application.Features.AddToCart;
 
 public class AddToCartHandler(
     ILogger<AddToCartHandler> logger,

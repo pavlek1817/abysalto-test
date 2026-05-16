@@ -1,4 +1,4 @@
-namespace CartService.Application.Contracts.GetCart.Models;
+namespace CartService.Application.Features.GetCart.Models;
 
 public record CartModel(
     int Id,

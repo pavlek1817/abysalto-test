@@ -1,5 +1,4 @@
 using CartService.Domain.Entities;
-using FluentAssertions;
 
 namespace CartService.UnitTests.Infrastructure.Repositories.CartRepositoryTests;
 

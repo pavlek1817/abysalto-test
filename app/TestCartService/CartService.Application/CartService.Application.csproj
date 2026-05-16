@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Contracts\AddToCart\" />
+      <Folder Include="Features\AddToCart\" />
     </ItemGroup>
 
 </Project>

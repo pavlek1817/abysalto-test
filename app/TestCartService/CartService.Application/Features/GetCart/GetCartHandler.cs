@@ -1,11 +1,11 @@
 using AutoMapper;
-using CartService.Application.Contracts.GetCart.Models;
 using CartService.Application.Exceptions;
+using CartService.Application.Features.GetCart.Models;
 using CartService.Application.Mediator.Interfaces.Handlers;
 using CartService.Application.Persistence;
 using Microsoft.Extensions.Logging;
 
-namespace CartService.Application.Contracts.GetCart;
+namespace CartService.Application.Features.GetCart;
 
 /// <summary>
 /// Class that implements method for get cart by id.

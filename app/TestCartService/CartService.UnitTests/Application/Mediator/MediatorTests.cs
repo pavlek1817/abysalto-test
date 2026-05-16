@@ -1,7 +1,6 @@
 using CartService.Application.Mediator.Interfaces;
 using CartService.Application.Mediator.Interfaces.Handlers;
 using CartService.Application.Mediator.Interfaces.Models;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CartService.UnitTests.Application.Mediator;
