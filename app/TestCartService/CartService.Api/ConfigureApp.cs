@@ -1,3 +1,4 @@
+using CartService.Api.Endpoints;
 using CartService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,8 @@ public static class ConfigureApp
         }
 
         app.UseHttpsRedirection();
+
+        app.RegisterCartEndpoints();
 
         app.MapHealthChecks("/health/live", new HealthCheckOptions
         {
