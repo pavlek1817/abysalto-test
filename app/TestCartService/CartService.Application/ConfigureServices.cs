@@ -16,8 +16,8 @@ public static class ConfigureServices
 
         services.AddMediatorServices();
 
-        services.AddScoped<IQueryHandler<GetCartQuery, CartModel>>();
-        services.AddScoped<ICommandHandler<AddToCartCommand, AddToCartHandler>>();
+        services.AddScoped<IQueryHandler<GetCartQuery, CartModel>, GetCartHandler>();
+        services.AddScoped<ICommandHandler<AddToCartCommand, CartModel>, AddToCartHandler>();
 
         return services;
     }
