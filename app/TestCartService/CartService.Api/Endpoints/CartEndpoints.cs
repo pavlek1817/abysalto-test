@@ -3,6 +3,7 @@ using CartService.Application.Exceptions;
 using CartService.Application.Features.AddToCart;
 using CartService.Application.Features.GetCart;
 using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Features.RemoveCartItem;
 using CartService.Application.Mediator.Interfaces;
 
 namespace CartService.Api.Endpoints;
@@ -31,6 +32,22 @@ public static class CartEndpoints
             catch (NotEnoughQuantityException ex)
             {
                 return Results.BadRequest(ex.Message);
+            }
+        });
+
+        group.MapDelete("remove-item", async (
+            RemoveCartItemCommand command,
+            IMediator mediator,
+            CancellationToken ct) =>
+        {
+            try
+            {
+                var result = await mediator.SendAsync<RemoveCartItemCommand, CartModel>(command, ct);
+                return Results.Ok(result);
+            }
+            catch (ItemDoesNotExistException ex)
+            {
+                return Results.NotFound(ex.Message);
             }
         });
 

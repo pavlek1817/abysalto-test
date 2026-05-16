@@ -1,6 +1,7 @@
 using CartService.Application.Features.AddToCart;
 using CartService.Application.Features.GetCart;
 using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Features.RemoveCartItem;
 using CartService.Application.Mappings;
 using CartService.Application.Mediator.Implementations;
 using CartService.Application.Mediator.Interfaces.Handlers;
@@ -18,6 +19,7 @@ public static class ConfigureServices
 
         services.AddScoped<IQueryHandler<GetCartQuery, CartModel>, GetCartHandler>();
         services.AddScoped<ICommandHandler<AddToCartCommand, CartModel>, AddToCartHandler>();
+        services.AddScoped<ICommandHandler<RemoveCartItemCommand, CartModel>, RemoveCartItemHandler>();
 
         return services;
     }
