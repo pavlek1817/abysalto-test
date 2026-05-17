@@ -1,4 +1,5 @@
 using CartService.Domain.Entities;
+using StackExchange.Redis;
 
 namespace CartService.UnitTests.Infrastructure.Persistence.Repositories.CartRepositoryTests;
 
@@ -36,5 +37,9 @@ internal class DeleteAsyncTests : CartRepositoryTestBase
 
         var untouched = await DatabaseContext.Set<Cart>().FindAsync(_irrelevantCart.Id);
         untouched.Should().BeEquivalentTo(_irrelevantCart);
+
+        MockedDatabase.Verify(x => x.KeyDeleteAsync(
+            It.Is<RedisKey>(k => k == $"cart:{_cart.OwnerId}"),
+            It.IsAny<CommandFlags>()), Times.Once);
     }
 }

@@ -41,24 +41,21 @@ internal class CartRepositoryTestBase : RepositoryTestBase<ICartRepository>
             options => options.Excluding(x => x.Cart));
     }
 
-    protected void CaptureCartAddedToCache()
+    protected void CaptureCartAddedToCache(string key)
     {
         MockedDatabase.Setup(x => x.StringSetAsync(
-                It.IsAny<RedisKey>(),
+                It.Is<RedisKey>(k => k == key),
                 It.IsAny<RedisValue>(),
                 It.IsAny<TimeSpan?>(),
                 It.IsAny<bool>(),
                 It.IsAny<When>(),
                 It.IsAny<CommandFlags>()))
-            .Callback((RedisKey key, RedisValue value, TimeSpan? expiry, bool keepTtl, When when, CommandFlags flags) =>
+            .Callback((RedisKey _, RedisValue value, TimeSpan? _, bool _, When _, CommandFlags _) =>
             {
-                if (key.ToString().StartsWith("cart:"))
+                CapturedCartAddedInCache = JsonSerializer.Deserialize<Cart>(value!, new JsonSerializerOptions
                 {
-                    CapturedCartAddedInCache = JsonSerializer.Deserialize<Cart>(value!, new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.IgnoreCycles
-                    });
-                }
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                });
             });
     }
 }

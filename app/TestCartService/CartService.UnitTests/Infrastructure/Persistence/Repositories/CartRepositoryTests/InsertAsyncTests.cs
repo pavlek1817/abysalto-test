@@ -11,8 +11,6 @@ internal class InsertAsyncTests : CartRepositoryTestBase
     public void SetUp()
     {
         InstantiatedDependencies();
-        
-        CaptureCartAddedToCache();
 
         _existingCart = Fixture.Build<Cart>()
             .Without(x => x.Items)
@@ -24,6 +22,8 @@ internal class InsertAsyncTests : CartRepositoryTestBase
         _cart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
+
+        CaptureCartAddedToCache($"cart:{_cart.OwnerId}");
     }
 
     [Test]

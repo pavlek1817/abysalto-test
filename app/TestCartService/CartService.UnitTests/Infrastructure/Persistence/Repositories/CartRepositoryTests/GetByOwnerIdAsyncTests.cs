@@ -18,7 +18,7 @@ internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
 
         InstantiatedDependencies();
 
-        CaptureCartAddedToCache();
+        CaptureCartAddedToCache($"cart:{_ownerId}");
 
         Carts = new List<Cart>
         {

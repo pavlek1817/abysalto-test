@@ -11,8 +11,6 @@ internal class UpdateAsyncTests : CartRepositoryTestBase
     public void SetUp()
     {
         InstantiatedDependencies();
-        
-        CaptureCartAddedToCache();
 
         _cart = Fixture.Build<Cart>()
             .Without(x => x.Items)
@@ -35,6 +33,7 @@ internal class UpdateAsyncTests : CartRepositoryTestBase
             .Without(x => x.Items)
             .Create();
 
+        CaptureCartAddedToCache($"cart:{updatedCart.OwnerId}");
         DatabaseContext.ChangeTracker.Clear();
 
         // Act
