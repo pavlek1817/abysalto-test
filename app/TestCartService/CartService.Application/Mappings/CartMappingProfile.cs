@@ -1,5 +1,5 @@
 using AutoMapper;
-using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Features.Shared.Models;
 using CartService.Domain.Entities;
 
 namespace CartService.Application.Mappings;

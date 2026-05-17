@@ -1,5 +1,5 @@
 using CartService.Application.Features.GetCart;
-using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Features.Shared.Models;
 using CartService.Application.Infrastructure.Persistence;
 using CartService.Application.Mediator.Interfaces.Handlers;
 using Microsoft.Extensions.Logging;
