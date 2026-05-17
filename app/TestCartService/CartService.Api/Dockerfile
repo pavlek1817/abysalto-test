@@ -9,7 +9,6 @@ COPY CartService.Api/CartService.Api.csproj CartService.Api/
 COPY CartService.Application/CartService.Application.csproj CartService.Application/
 COPY CartService.Infrastructure/CartService.Infrastructure.csproj CartService.Infrastructure/
 COPY CartService.Domain/CartService.Domain.csproj CartService.Domain/
-COPY nuget.config ./
 
 RUN dotnet restore CartService.Api/CartService.Api.csproj
 
