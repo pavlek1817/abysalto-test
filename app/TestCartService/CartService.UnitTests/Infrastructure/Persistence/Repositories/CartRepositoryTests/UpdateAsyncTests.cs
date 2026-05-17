@@ -10,39 +10,43 @@ internal class UpdateAsyncTests : CartRepositoryTestBase
     [SetUp]
     public void SetUp()
     {
-        this.InstantiatedDependencies();
+        InstantiatedDependencies();
+        
+        CaptureCartAddedToCache();
 
-        this._cart = this.Fixture.Build<Cart>()
+        _cart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
 
-        this._irrelevantCart = this.Fixture.Build<Cart>()
+        _irrelevantCart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
 
-        this.DatabaseContext.Set<Cart>().AddRange(_cart, _irrelevantCart);
-        this.DatabaseContext.SaveChanges();
+        DatabaseContext.Set<Cart>().AddRange(_cart, _irrelevantCart);
+        DatabaseContext.SaveChanges();
     }
 
     [Test]
     public async Task OrdinaryCase_ShouldUpdateCart()
     {
         // Arrange
-        var updatedCart = this.Fixture.Build<Cart>()
+        var updatedCart = Fixture.Build<Cart>()
             .With(x => x.Id, _cart.Id)
             .Without(x => x.Items)
             .Create();
 
-        this.DatabaseContext.ChangeTracker.Clear();
+        DatabaseContext.ChangeTracker.Clear();
 
         // Act
-        await this.GetService().UpdateAsync(updatedCart, CancellationToken.None);
+        await GetService().UpdateAsync(updatedCart, CancellationToken.None);
 
         // Assert
-        var result = await this.DatabaseContext.Set<Cart>().FindAsync(_cart.Id);
+        var result = await DatabaseContext.Set<Cart>().FindAsync(_cart.Id);
         result.Should().BeEquivalentTo(updatedCart, options => options.Excluding(x => x.Items));
 
-        var untouched = await this.DatabaseContext.Set<Cart>().FindAsync(_irrelevantCart.Id);
+        var untouched = await DatabaseContext.Set<Cart>().FindAsync(_irrelevantCart.Id);
         untouched.Should().BeEquivalentTo(_irrelevantCart);
+        
+        AssertResponse(updatedCart, result);
     }
 }

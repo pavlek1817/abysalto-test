@@ -10,34 +10,38 @@ internal class InsertAsyncTests : CartRepositoryTestBase
     [SetUp]
     public void SetUp()
     {
-        this.InstantiatedDependencies();
+        InstantiatedDependencies();
+        
+        CaptureCartAddedToCache();
 
-        this._existingCart = this.Fixture.Build<Cart>()
+        _existingCart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
 
-        this.DatabaseContext.Set<Cart>().Add(_existingCart);
-        this.DatabaseContext.SaveChanges();
+        DatabaseContext.Set<Cart>().Add(_existingCart);
+        DatabaseContext.SaveChanges();
 
-        this._cart = this.Fixture.Build<Cart>()
+        _cart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
     }
 
     [Test]
-    public async Task OrdinaryCase_ShouldInsertCart()
+    public async Task OrdinaryCase_ShouldInsertCart_InDbAndCache()
     {
         // Act
-        var result = await this.GetService().InsertAsync(_cart, CancellationToken.None);
+        var result = await GetService().InsertAsync(_cart, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(_cart, options => options.Excluding(x => x.CreatedAt));
 
-        var inserted = await this.DatabaseContext.Set<Cart>().FindAsync(result.Id);
+        var inserted = await DatabaseContext.Set<Cart>().FindAsync(result.Id);
         inserted.Should().NotBeNull();
 
-        var untouched = await this.DatabaseContext.Set<Cart>().FindAsync(_existingCart.Id);
+        var untouched = await DatabaseContext.Set<Cart>().FindAsync(_existingCart.Id);
         untouched.Should().BeEquivalentTo(_existingCart);
+        
+        AssertResponse(inserted, CapturedCartAddedInCache);
     }
 }

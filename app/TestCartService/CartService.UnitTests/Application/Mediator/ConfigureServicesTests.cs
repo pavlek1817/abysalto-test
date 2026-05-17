@@ -11,17 +11,17 @@ internal class ConfigureServicesTests : TestBase
     [SetUp]
     public void SetUp()
     {
-        this.services = new ServiceCollection();
+        services = new ServiceCollection();
     }
 
     [Test]
     public void AddHandlerServices_OrdinaryCase_ShouldRegisterServicesCorrectly()
     {
         // Arrange
-        this.services.AddMediatorServices();
+        services.AddMediatorServices();
 
         // Act
-        var serviceProvider = this.services.BuildServiceProvider();
+        var serviceProvider = services.BuildServiceProvider();
 
         // Assert
         var probabilityFunction = serviceProvider.GetService<IMediator>();

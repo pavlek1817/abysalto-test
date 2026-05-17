@@ -10,31 +10,31 @@ internal class DeleteAsyncTests : CartRepositoryTestBase
     [SetUp]
     public void SetUp()
     {
-        this.InstantiatedDependencies();
+        InstantiatedDependencies();
 
-        this._cart = this.Fixture.Build<Cart>()
+        _cart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
 
-        this._irrelevantCart = this.Fixture.Build<Cart>()
+        _irrelevantCart = Fixture.Build<Cart>()
             .Without(x => x.Items)
             .Create();
 
-        this.DatabaseContext.Set<Cart>().AddRange(_cart, _irrelevantCart);
-        this.DatabaseContext.SaveChanges();
+        DatabaseContext.Set<Cart>().AddRange(_cart, _irrelevantCart);
+        DatabaseContext.SaveChanges();
     }
 
     [Test]
     public async Task OrdinaryCase_ShouldDeleteCart()
     {
         // Act
-        await this.GetService().DeleteAsync(_cart.Id, CancellationToken.None);
+        await GetService().DeleteAsync(_cart.Id, CancellationToken.None);
 
         // Assert
-        var result = await this.DatabaseContext.Set<Cart>().FindAsync(_cart.Id);
+        var result = await DatabaseContext.Set<Cart>().FindAsync(_cart.Id);
         result.Should().BeNull();
 
-        var untouched = await this.DatabaseContext.Set<Cart>().FindAsync(_irrelevantCart.Id);
+        var untouched = await DatabaseContext.Set<Cart>().FindAsync(_irrelevantCart.Id);
         untouched.Should().BeEquivalentTo(_irrelevantCart);
     }
 }

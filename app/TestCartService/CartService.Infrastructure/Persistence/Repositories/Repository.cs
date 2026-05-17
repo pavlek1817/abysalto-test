@@ -11,7 +11,7 @@ public class Repository<TEntity>(CartDbContext dbContext) : IRepository<TEntity>
         => dbContext.Set<TEntity>()
             .SingleOrDefaultAsync(x => x.Id == id, ct);
 
-    public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct)
+    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken ct)
     {
         entity.CreatedAt = DateTime.UtcNow;
         var entry = await dbContext.Set<TEntity>().AddAsync(entity, ct);
@@ -19,7 +19,7 @@ public class Repository<TEntity>(CartDbContext dbContext) : IRepository<TEntity>
         return entry.Entity;
     }
 
-    public async Task UpdateAsync(TEntity entity, CancellationToken ct)
+    public virtual async Task UpdateAsync(TEntity entity, CancellationToken ct)
     {
         if (dbContext.Entry(entity).State == EntityState.Detached)
             dbContext.Set<TEntity>().Attach(entity);
@@ -28,7 +28,7 @@ public class Repository<TEntity>(CartDbContext dbContext) : IRepository<TEntity>
         await dbContext.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteAsync(int id, CancellationToken ct)
+    public virtual async Task DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await dbContext.Set<TEntity>().FindAsync([id], ct);
         if (entity is not null)

@@ -12,9 +12,9 @@ internal class EdgeCaseTests : AddToCartTestBase
     [SetUp]
     public void SetUp()
     {
-        this._addToCartCommand = this.Fixture.Create<AddToCartCommand>();
+        _addToCartCommand = Fixture.Create<AddToCartCommand>();
         
-        this.InstantiatedDependencies();
+        InstantiatedDependencies();
     }
 
     [TestCase(typeof(NotEnoughQuantityException))]
@@ -22,29 +22,29 @@ internal class EdgeCaseTests : AddToCartTestBase
     public void ProductServiceResolveCallThrowsExceptionCase_ShouldReThrowException(Type exceptionType)
     {
         // Arrange
-        var errorMessage = this.Fixture.Create<string>();
+        var errorMessage = Fixture.Create<string>();
         var constructor = exceptionType.GetConstructor(new[] { typeof(string) });
         var exception = (Exception)constructor!.Invoke([errorMessage]);
 
-        this.MockedProductService
+        MockedProductService
             .Setup(repo => repo.ResolveProductPriceAndSubtractAsync(
                 It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                 && p.Quantity == _addToCartCommand.Quantity), It.IsAny<CancellationToken>()))
             .Throws(() => exception);
 
-        var act = () => this.GetService()
-            .HandleAsync(this._addToCartCommand, CancellationToken.None);
+        var act = () => GetService()
+            .HandleAsync(_addToCartCommand, CancellationToken.None);
 
         // Act & Assert
         Assert.ThrowsAsync(exceptionType, () => act.Invoke());
         
-        this.MockedCartRepository.VerifyNoOtherCalls();
+        MockedCartRepository.VerifyNoOtherCalls();
 
-        this.MockedProductService
+        MockedProductService
             .Verify(repo => repo.ResolveProductPriceAndSubtractAsync(
                 It.IsAny<ProductModel>(), It.IsAny<CancellationToken>()), Times.Once);
         
-        this.MockedProductService.VerifyNoOtherCalls();
+        MockedProductService.VerifyNoOtherCalls();
     }
 
     [Test]
@@ -52,37 +52,37 @@ internal class EdgeCaseTests : AddToCartTestBase
     {
         // Arrange
         const int unitPrice = 5;
-        this.MockedProductService
+        MockedProductService
             .Setup(repo => repo.ResolveProductPriceAndSubtractAsync(
                 It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                                          && p.Quantity == _addToCartCommand.Quantity), It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => unitPrice);
         
-        this.MockedCartRepository.Setup(x => x.GetByOwnerIdAsync(_addToCartCommand.OwnerId, It.IsAny<CancellationToken>()))
+        MockedCartRepository.Setup(x => x.GetByOwnerIdAsync(_addToCartCommand.OwnerId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => null);
         
-        this.MockedCartRepository.Setup(x => x.InsertAsync(It.IsAny<Domain.Entities.Cart>(), It.IsAny<CancellationToken>()))
+        MockedCartRepository.Setup(x => x.InsertAsync(It.IsAny<Cart>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
         
         
-        var act = () => this.GetService()
-            .HandleAsync(this._addToCartCommand, CancellationToken.None);
+        var act = () => GetService()
+            .HandleAsync(_addToCartCommand, CancellationToken.None);
         
         // Act && Assert
         await act.Should().ThrowExactlyAsync<Exception>();
 
-        this.MockedProductService
+        MockedProductService
             .Verify(repo => repo.ResolveProductPriceAndSubtractAsync(
                     It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                                              && p.Quantity == _addToCartCommand.Quantity),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         
-        this.MockedProductService.Verify(x => x.ReplenishProductStockAsync(
+        MockedProductService.Verify(x => x.ReplenishProductStockAsync(
             It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                                      && p.Quantity == _addToCartCommand.Quantity), It.IsAny<CancellationToken>()), Times.Once);
         
-        this.MockedProductService.VerifyNoOtherCalls();
+        MockedProductService.VerifyNoOtherCalls();
     }
 
     [Test]
@@ -90,39 +90,39 @@ internal class EdgeCaseTests : AddToCartTestBase
     {
         // Arrange
         const int unitPrice = 5;
-        this.MockedProductService
+        MockedProductService
             .Setup(repo => repo.ResolveProductPriceAndSubtractAsync(
                 It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                                          && p.Quantity == _addToCartCommand.Quantity), It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => unitPrice);
         
-        this.MockedCartRepository.Setup(x => x.GetByOwnerIdAsync(_addToCartCommand.OwnerId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => this.Fixture.Build<Cart>()
+        MockedCartRepository.Setup(x => x.GetByOwnerIdAsync(_addToCartCommand.OwnerId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => Fixture.Build<Cart>()
                 .Without(x => x.Items)
                 .Create()
             );
         
-        this.MockedCartRepository.Setup(x => x.UpdateAsync(It.IsAny<Domain.Entities.Cart>(), It.IsAny<CancellationToken>()))
+        MockedCartRepository.Setup(x => x.UpdateAsync(It.IsAny<Cart>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
         
         
-        var act = () => this.GetService()
-            .HandleAsync(this._addToCartCommand, CancellationToken.None);
+        var act = () => GetService()
+            .HandleAsync(_addToCartCommand, CancellationToken.None);
         
         // Act && Assert
         await act.Should().ThrowExactlyAsync<Exception>();
 
-        this.MockedProductService
+        MockedProductService
             .Verify(repo => repo.ResolveProductPriceAndSubtractAsync(
                     It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                                              && p.Quantity == _addToCartCommand.Quantity),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         
-        this.MockedProductService.Verify(x => x.ReplenishProductStockAsync(
+        MockedProductService.Verify(x => x.ReplenishProductStockAsync(
             It.Is<ProductModel>(p => p.ProductId == _addToCartCommand.ProductId
                                      && p.Quantity == _addToCartCommand.Quantity), It.IsAny<CancellationToken>()), Times.Once);
         
-        this.MockedProductService.VerifyNoOtherCalls();
+        MockedProductService.VerifyNoOtherCalls();
     }
 }
