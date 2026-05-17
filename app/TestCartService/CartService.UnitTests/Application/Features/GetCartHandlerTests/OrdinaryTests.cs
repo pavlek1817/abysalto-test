@@ -12,41 +12,41 @@ internal class OrdinaryTests : GetCartHandlerTestBase
     [SetUp]
     public void SetUp()
     {
-        this.ownerId = this.Fixture.Create<string>();
+        ownerId = Fixture.Create<string>();
 
-        this.InstantiatedDependencies();
+        InstantiatedDependencies();
     }
 
     [Test]
     public async Task CartExistCase_ShouldReturnCorrectResponse()
     {
         // Arrange
-        var cart = this.Fixture.Build<Cart>()
+        var cart = Fixture.Build<Cart>()
             .With(x => x.OwnerId, ownerId)
             .Without(x => x.Items)
             .Create();
 
         var cartItems = new List<CartItem>
         {
-            this.Fixture.Build<CartItem>()
+            Fixture.Build<CartItem>()
                 .Without(x => x.Cart)
                 .Create(),
-            this.Fixture.Build<CartItem>()
+            Fixture.Build<CartItem>()
                 .Without(x => x.Cart)
                 .Create(),
-            this.Fixture.Build<CartItem>()
+            Fixture.Build<CartItem>()
                 .Without(x => x.Cart)
                 .Create()
         };
         
         cart.Items.AddRange(cartItems);
 
-        this.MockedCartRepository
+        MockedCartRepository
             .Setup(x => x.GetByOwnerIdAsync(ownerId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(cart);
 
         // Act
-        var result = await this.GetService()
+        var result = await GetService()
             .HandleAsync(new GetCartQuery(ownerId), CancellationToken.None);
 
         // Assert
@@ -69,12 +69,12 @@ internal class OrdinaryTests : GetCartHandlerTestBase
     public async Task CartDoesNotExistCase_ShouldThrowItemDoesNotExistException()
     {
         // Arrange
-        this.MockedCartRepository
+        MockedCartRepository
             .Setup(x => x.GetByOwnerIdAsync(ownerId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => null);
 
         
-        var act = async () => await this.GetService().HandleAsync(new GetCartQuery(ownerId), CancellationToken.None);
+        var act = async () => await GetService().HandleAsync(new GetCartQuery(ownerId), CancellationToken.None);
 
         // Act && Assert
         await act.Should().ThrowAsync<ItemDoesNotExistException>();

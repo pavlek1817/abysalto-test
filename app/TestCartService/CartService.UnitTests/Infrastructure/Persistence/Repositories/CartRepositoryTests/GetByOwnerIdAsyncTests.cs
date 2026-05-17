@@ -1,4 +1,7 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using CartService.Domain.Entities;
+using StackExchange.Redis;
 
 namespace CartService.UnitTests.Infrastructure.Persistence.Repositories.CartRepositoryTests;
 
@@ -6,17 +9,18 @@ internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
 {
     private int _cartId;
     private string _ownerId = string.Empty;
-    private List<Cart> _carts = null!;
 
     [SetUp]
     public void SetUp()
     {
-        this._cartId = this.Fixture.Create<int>();
-        this._ownerId = this.Fixture.Create<string>();
+        _cartId = Fixture.Create<int>();
+        _ownerId = Fixture.Create<string>();
 
-        this.InstantiatedDependencies();
+        InstantiatedDependencies();
 
-        this._carts = new List<Cart>
+        CaptureCartAddedToCache($"cart:{_ownerId}");
+
+        Carts = new List<Cart>
         {
             new()
             {
@@ -25,42 +29,66 @@ internal class GetByOwnerIdAsyncTests : CartRepositoryTestBase
                 CreatedAt = DateTime.UtcNow,
                 Items =
                 [
-                    this.Fixture.Build<CartItem>()
+                    Fixture.Build<CartItem>()
                         .With(x => x.CartId, _cartId)
                         .Without(x => x.Cart)
                         .Create(),
-                    this.Fixture.Build<CartItem>()
+                    Fixture.Build<CartItem>()
                         .With(x => x.CartId, _cartId)
                         .Without(x => x.Cart)
                         .Create()
                 ]
             },
-            this.Fixture.Build<Cart>()
+            Fixture.Build<Cart>()
                 .Without(x => x.Items)
                 .Create()
         };
 
-        this.DatabaseContext.Set<Cart>().AddRange(_carts);
-        this.DatabaseContext.SaveChanges();
+        DatabaseContext.Set<Cart>().AddRange(Carts);
+        DatabaseContext.SaveChanges();
     }
 
     [Test]
-    public async Task CartExistCase_ShouldReturnCartWithItems()
+    public async Task CartExistOnlyInDatabaseCase_ShouldReturnCorrectObject_AndAddToCache()
     {
         // Act
-        var result = await this.GetService().GetByOwnerIdAsync(_ownerId, CancellationToken.None);
+        var result = await GetService().GetByOwnerIdAsync(_ownerId, CancellationToken.None);
 
         // Assert
-        var cart = this._carts.Single(x => x.OwnerId == _ownerId);
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(cart);
+        var expected = Carts.Single(x => x.OwnerId == _ownerId);
+        AssertResponse(expected, result);
+        AssertResponse(expected, CapturedCartAddedInCache);
+    }
+
+    [Test]
+    public async Task CartExistInCache_ShouldReturnCartFromCache()
+    {
+        // Arrange
+        var jsonOptions = new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.IgnoreCycles };
+        MockedDatabase.Setup(x => x.StringGetAsync(
+            It.IsAny<RedisKey>(),
+            It.IsAny<CommandFlags>()))
+            .ReturnsAsync(() =>
+                new RedisValue(JsonSerializer.Serialize(
+                    this.Carts.Single(x => x.OwnerId == _ownerId), jsonOptions)));
+
+        // Act
+        var result = await GetService().GetByOwnerIdAsync(_ownerId, CancellationToken.None);
+
+        // Assert
+        var expected = Carts.Single(x => x.OwnerId == _ownerId);
+        AssertResponse(expected, result!);
+
+        MockedDatabase.Verify(x => x.StringGetAsync(
+            It.Is<RedisKey>(k => k == $"cart:{_ownerId}"),
+            It.IsAny<CommandFlags>()), Times.Once);
     }
 
     [Test]
     public async Task CartDoesNotExist_ShouldReturnNull()
     {
         // Act
-        var result = await this.GetService().GetByOwnerIdAsync(this.Fixture.Create<string>(), CancellationToken.None);
+        var result = await GetService().GetByOwnerIdAsync(Fixture.Create<string>(), CancellationToken.None);
 
         // Assert
         result.Should().BeNull();

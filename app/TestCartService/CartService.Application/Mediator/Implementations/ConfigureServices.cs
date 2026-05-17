@@ -12,6 +12,6 @@ public static class ConfigureServices
     public static void AddMediatorServices(this IServiceCollection services)
     {
         // Add hame handler
-        services.AddScoped<IMediator, CartService.Application.Mediator.Implementations.Mediator>();
+        services.AddScoped<IMediator, Mediator>();
     }
 }

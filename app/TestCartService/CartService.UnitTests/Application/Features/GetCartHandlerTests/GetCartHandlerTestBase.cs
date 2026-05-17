@@ -14,13 +14,13 @@ internal class GetCartHandlerTestBase : ServiceTestBase<IQueryHandler<GetCartQue
 
     protected override IQueryHandler<GetCartQuery, CartModel> GetService()
         => new GetCartHandler(
-            this.mockedLogger.Object,
-            this.MockedCartRepository.Object,
-            this.Mapper);
+            mockedLogger.Object,
+            MockedCartRepository.Object,
+            Mapper);
 
     protected override void InstantiatedDependencies()
     {
-        this.mockedLogger = new Mock<ILogger<GetCartHandler>>();
-        this.MockedCartRepository = new Mock<ICartRepository>();
+        mockedLogger = new Mock<ILogger<GetCartHandler>>();
+        MockedCartRepository = new Mock<ICartRepository>();
     }
 }

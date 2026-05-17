@@ -12,16 +12,16 @@ internal class MediatorTests : TestBase
     [SetUp]
     public void SetUp()
     {
-        this.services = new ServiceCollection();
-        this.services.AddScoped<IMediator, CartService.Application.Mediator.Implementations.Mediator>();
+        services = new ServiceCollection();
+        services.AddScoped<IMediator, CartService.Application.Mediator.Implementations.Mediator>();
     }
 
     [Test]
     public async Task SendAsync_CommandOrdinaryCase_ShouldReturnResult()
     {
         // Arrange
-        this.services.AddScoped<ICommandHandler<TestCommand, TestCommandResult>, TestCommandHandler>();
-        var provider = this.services.BuildServiceProvider();
+        services.AddScoped<ICommandHandler<TestCommand, TestCommandResult>, TestCommandHandler>();
+        var provider = services.BuildServiceProvider();
         var mediator = provider.GetRequiredService<IMediator>();
         var command = new TestCommand { Value = 7 };
 
@@ -37,8 +37,8 @@ internal class MediatorTests : TestBase
     public async Task SendAsync_QueryOrdinaryCase_ShouldReturnResult()
     {
         // Arrange
-        this.services.AddScoped<IQueryHandler<TestQuery, TestQueryResult>, TestQueryHandler>();
-        var provider = this.services.BuildServiceProvider();
+        services.AddScoped<IQueryHandler<TestQuery, TestQueryResult>, TestQueryHandler>();
+        var provider = services.BuildServiceProvider();
         var mediator = provider.GetRequiredService<IMediator>();
         var query = new TestQuery { Value = 3 };
 
@@ -54,7 +54,7 @@ internal class MediatorTests : TestBase
     public async Task SendAsync_CommandHandlerDoesNotExist_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var provider = this.services.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
         var mediator = provider.GetRequiredService<IMediator>();
         var command = new TestCommand { Value = 1 };
 
@@ -69,7 +69,7 @@ internal class MediatorTests : TestBase
     public async Task SendAsync_RequestIsNotCommandOrQuery_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        var provider = this.services.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
         var mediator = provider.GetRequiredService<IMediator>();
         var request = new UnsupportedRequest();
 

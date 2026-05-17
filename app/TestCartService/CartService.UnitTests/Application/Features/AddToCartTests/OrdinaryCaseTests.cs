@@ -87,14 +87,14 @@ internal class OrdinaryCaseTests : AddToCartTestBase
                                          && p.Quantity == _addToCartCommand.Quantity), It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => unitPrice);
 
-        var existingCart = this.Fixture.Build<Cart>()
+        var existingCart = Fixture.Build<Cart>()
             .With(x => x.OwnerId, _addToCartCommand.OwnerId)
             .With(x => x.Items, new List<CartItem>
                 {
-                    this.Fixture.Build<CartItem>()
+                    Fixture.Build<CartItem>()
                         .Without(x => x.Cart)
                         .Create(),
-                    this.Fixture.Build<CartItem>()
+                    Fixture.Build<CartItem>()
                         .With(x => x.ProductId, _addToCartCommand.ProductId)
                         .With(x => x.Quantity, initialQuantity)
                         .With(x => x.UnitPrice, unitPrice)
