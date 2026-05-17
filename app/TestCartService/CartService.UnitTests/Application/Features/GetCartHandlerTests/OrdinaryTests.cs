@@ -1,6 +1,6 @@
 using CartService.Application.Exceptions;
 using CartService.Application.Features.GetCart;
-using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Features.Shared.Models;
 using CartService.Domain.Entities;
 
 namespace CartService.UnitTests.Application.Features.GetCartHandlerTests;

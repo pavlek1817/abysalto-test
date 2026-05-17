@@ -1,6 +1,6 @@
 using AutoMapper;
 using CartService.Application.Exceptions;
-using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Features.Shared.Models;
 using CartService.Application.Infrastructure.External;
 using CartService.Application.Infrastructure.Persistence;
 using CartService.Application.Mediator.Interfaces.Handlers;
