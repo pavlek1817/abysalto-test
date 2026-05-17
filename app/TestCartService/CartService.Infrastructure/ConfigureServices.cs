@@ -22,7 +22,8 @@ public static class ConfigureServices
             options.UseNpgsql(config.Database.ConnectionString));
 
         services.AddSingleton<IConnectionMultiplexer>(
-            ConnectionMultiplexer.Connect(config.Cache.Host));
+            ConnectionMultiplexer.Connect(
+                ConfigurationOptions.Parse(config.Cache.Host, true)));
 
         services.AddHealthChecks()
             .AddNpgSql(config.Database.ConnectionString, name: "postgres", tags: ["ready"])
