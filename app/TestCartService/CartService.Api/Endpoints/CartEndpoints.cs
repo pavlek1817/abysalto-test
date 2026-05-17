@@ -38,7 +38,7 @@ public static class CartEndpoints
             }
         });
 
-        group.MapDelete("remove-item", async (
+        group.MapPut("remove-item", async (
             RemoveCartItemCommand command,
             IMediator mediator,
             CancellationToken ct) =>
@@ -54,14 +54,17 @@ public static class CartEndpoints
             }
         });
 
-        group.MapDelete("remove", async (
-            RemoveCartCommand command,
+        group.MapDelete("{id:int}", async (
+            int id,
             IMediator mediator,
             CancellationToken ct) =>
         {
+            if (id <= 0)
+                return Results.BadRequest("Cart id must be greater than 0.");
+
             try
             {
-                await mediator.SendAsync<RemoveCartCommand, EmptyResponse>(command, ct);
+                await mediator.SendAsync<RemoveCartCommand, EmptyResponse>(new RemoveCartCommand(id), ct);
                 return Results.NoContent();
             }
             catch (ItemDoesNotExistException ex)
@@ -90,11 +93,14 @@ public static class CartEndpoints
             }
         });
 
-        group.MapGet("get", async (
+        group.MapGet("{ownerId}", async (
             string ownerId,
             IMediator mediator,
             CancellationToken ct) =>
         {
+            if (string.IsNullOrEmpty(ownerId))
+                return Results.BadRequest("Owner id must not be empty.");
+
             try
             {
                 var result = await mediator.SendAsync<GetCartQuery, CartModel>(new GetCartQuery(ownerId), ct);

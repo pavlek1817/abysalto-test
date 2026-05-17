@@ -7,9 +7,8 @@ public class RemoveCartItemCommandValidator : AbstractValidator<RemoveCartItemCo
 {
     public RemoveCartItemCommandValidator()
     {
-        RuleFor(x => x.OwnerId)
-            .NotNull()
-            .NotEmpty();
+        RuleFor(x => x.CartId)
+            .GreaterThan(0);
 
         RuleFor(x => x.ProductId)
             .GreaterThan(0);

@@ -1,6 +1,7 @@
 using AutoMapper;
 using CartService.Application.Exceptions;
 using CartService.Application.Features.GetCart.Models;
+using CartService.Application.Infrastructure.External;
 using CartService.Application.Infrastructure.Persistence;
 using CartService.Application.Mediator.Interfaces.Handlers;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ namespace CartService.Application.Features.SubtractFromCart;
 public class SubtractFromCartHandler(
     ILogger<SubtractFromCartHandler> logger,
     ICartRepository cartRepository,
+    IProductService productService,
     IMapper mapper) : ICommandHandler<SubtractFromCartCommand, CartModel>
 {
     public async Task<CartModel> HandleAsync(SubtractFromCartCommand command, CancellationToken ct)
@@ -46,6 +48,8 @@ public class SubtractFromCartHandler(
         cart.UpdatedAt = DateTime.UtcNow;
 
         await cartRepository.UpdateAsync(cart, ct);
+
+        await productService.ReplenishProductStockAsync(new ProductModel(command.ProductId, command.Quantity), ct);
 
         return mapper.Map<CartModel>(cart);
     }
