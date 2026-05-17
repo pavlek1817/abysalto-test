@@ -1,6 +1,5 @@
 using CartService.Api.Constants;
 using FluentValidation;
-using CartService.Application;
 using CartService.Infrastructure;
 
 namespace CartService.Api;
@@ -19,8 +18,7 @@ public static class ConfigureServices
         {
             throw new InvalidOperationException("AppConfig could not be loaded from configuration.");
         }
-
-        builder.Services.Configure<ApplicationConfig>(builder.Configuration.GetSection(ConfigSectionConstants.Application));
+        
         builder.Services.Configure<InfrastructureConfig>(builder.Configuration.GetSection(ConfigSectionConstants.Infrastructure));
     }
     

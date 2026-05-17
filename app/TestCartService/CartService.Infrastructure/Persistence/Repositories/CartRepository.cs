@@ -3,11 +3,15 @@ using System.Text.Json.Serialization;
 using CartService.Application.Infrastructure.Persistence;
 using CartService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
 namespace CartService.Infrastructure.Persistence.Repositories;
 
-public class CartRepository(CartDbContext dbContext, IConnectionMultiplexer redis)
+public class CartRepository(
+    IOptions<InfrastructureConfig> config,
+    CartDbContext dbContext,
+    IConnectionMultiplexer redis)
     : Repository<Cart>(dbContext), ICartRepository
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -20,7 +24,7 @@ public class CartRepository(CartDbContext dbContext, IConnectionMultiplexer redi
 
     public override async Task<Cart?> GetByIdAsync(int id, CancellationToken ct)
     {
-        var cart = await dbContext.Set<Cart>()
+        var cart = await DbContext.Set<Cart>()
             .Include(x => x.Items)
             .SingleOrDefaultAsync(x => x.Id == id, ct);
 
@@ -33,7 +37,7 @@ public class CartRepository(CartDbContext dbContext, IConnectionMultiplexer redi
         if (cached.HasValue)
             return JsonSerializer.Deserialize<Cart>(cached!, JsonOptions);
 
-        var cart = await dbContext.Set<Cart>()
+        var cart = await DbContext.Set<Cart>()
             .Include(x => x.Items)
             .SingleOrDefaultAsync(x => x.OwnerId == ownerId, ct);
 
@@ -58,16 +62,17 @@ public class CartRepository(CartDbContext dbContext, IConnectionMultiplexer redi
 
     public override async Task DeleteAsync(int id, CancellationToken ct)
     {
-        var cart = await dbContext.Set<Cart>().FindAsync([id], ct);
+        var cart = await DbContext.Set<Cart>().FindAsync([id], ct);
         if (cart is not null)
         {
-            dbContext.Set<Cart>().Remove(cart);
-            await dbContext.SaveChangesAsync(ct);
+            DbContext.Set<Cart>().Remove(cart);
+            await DbContext.SaveChangesAsync(ct);
             await Cache.KeyDeleteAsync(CacheKey(cart.OwnerId));
         }
     }
 
     private Task SetCacheAsync(Cart cart)
         => Cache.StringSetAsync(CacheKey(cart.OwnerId),
-            JsonSerializer.Serialize(cart, JsonOptions));
+            JsonSerializer.Serialize(cart, JsonOptions),
+            TimeSpan.FromMinutes(config.Value.Cache.CacheExpirationInMinutes));
 }
