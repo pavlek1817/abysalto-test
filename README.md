@@ -67,7 +67,7 @@ Metode su implementirane u **Application layeru** kroz **CQRS pattern** — svak
 
 **`GET /cart/{ownerId}` — Dohvati košaricu**
 - Vraća košaricu za zadanog vlasnika
-- Najprije provjerava Redis cache; ako košarica nije u cacheu, dohvaća iz baze i sprema u cache
+- Najprije provjerava Redis cache; ako košarica nije u cacheu, dohvaća iz baze i sprema u cache kako bi budući dohvat bio brži.
 
 **`DELETE /cart/{id:int}` — Obriši košaricu**
 - Briše cijelu košaricu po njenom internom `id`-u
@@ -85,6 +85,8 @@ Svaki endpoint s kompleksnim inputom ima vlastiti **validator** (FluentValidatio
 ### Caching
 
 Aplikacija koristi **Redis** kao cache layer. Prilikom dohvata košarice (`GET /cart/{ownerId}`) servis najprije provjerava postoji li košarica u cacheu te je, ako postoji, vraća bez upita prema bazi podataka.
+
+Svaka operacija koja mijenja stanje košarice (`add`, `remove-item`, `subtract`, `delete`) ažurira ili invalidira cache kako bi podaci ostali konzistentni.
 
 ### Simulacija Product servisa
 
@@ -113,7 +115,7 @@ Aplikacija se pokreće kroz **Docker Compose** koji podiže sve potrebne servise
 
 ```bash
 cd app/TestCartService
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 Docker Compose podiže:
@@ -125,6 +127,8 @@ Docker Compose podiže:
 | `cart_redis` | Redis 7 cache | `6379` |
 
 Nakon pokretanja, API je dostupan na: **`http://localhost:8080`**
+
+Swagger UI je dostupan na: **`http://localhost:8080/swagger`**
 
 Migracije baze podataka se automatski primjenjuju pri pokretanju aplikacije.
 
