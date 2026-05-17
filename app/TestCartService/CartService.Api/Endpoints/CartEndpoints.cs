@@ -4,7 +4,6 @@ using CartService.Application.Features.AddToCart;
 using CartService.Application.Features.GetCart;
 using CartService.Application.Features.Shared.Models;
 using CartService.Application.Features.RemoveCart;
-using CartService.Application.Features.Shared.Models;
 using CartService.Application.Features.RemoveCartItem;
 using CartService.Application.Features.SubtractFromCart;
 using CartService.Application.Mediator.Interfaces;
