@@ -24,7 +24,8 @@ public static class ConfigureServices
     
     public static void AddWebServices(this IServiceCollection services)
     {
-        services.AddOpenApi();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
 
         services.AddValidatorsFromAssemblyContaining<Program>();
     }
